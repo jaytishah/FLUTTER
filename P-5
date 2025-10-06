@@ -1,0 +1,87 @@
+void main() {
+ runApp(ResumeMakerApp());
+}
+
+class ResumeMakerApp extends StatelessWidget {
+ @override
+ Widget build(BuildContext context) {
+	return MaterialApp(
+	title: 'Resume Maker',
+ 
+	theme: ThemeData(primarySwatch: Colors.teal),
+	home: ResumeHomePage(),
+	);
+ }
+}
+2.	Data Models (Core Resume Structure)
+
+class Education {
+ String institute, degree, startYear, endYear;
+ Education({this.institute	=	'',	this.degree	=	'', this.startYear = '', this.endYear = ''});
+}
+
+class Experience {
+ String company, role, start, end, description;
+ Experience({this.company = '', this.role = '', this.start
+= '', this.end = '', this.description = ''});
+}
+
+class ResumeData {
+ String fullName = '', title = '', email = '', phone = '', linkedin = '', summary = '';
+ List<Education> education = [];
+ List<Experience> experience = [];
+ List<String> skills = [];
+ List<String> certifications = [];
+}
+
+3.	Export to PDF Function
+
+Future<void> exportPdf() async {
+ final doc = pw.Document();
+
+ doc.addPage(
+	pw.MultiPage(
+	build: (pw.Context ctx) => [
+ 
+pw.FontWeight.bold))),
+	pw.Text(data.title,	style:	pw.TextStyle(fontSize: 14)),
+	pw.SizedBox(height: 12),
+	pw.Text('Email: ${data.email}	Phone: ${data.phone} LinkedIn: ${data.linkedin}'),
+	pw.SizedBox(height: 12),
+	if (data.summary.isNotEmpty) pw.Text(data.summary),
+	if (data.experience.isNotEmpty) pw.Text('Experience:
+${data.experience.length} items'),
+	if  (data.education.isNotEmpty)  pw.Text('Education:
+${data.education.length} items'),
+ 
+
+ 
+${data.skills.join(", ")}'),
+ 
+")}'),
+	],
+	),
+ );
+ await Printing.sharePdf(bytes: await doc.save(), filename: '${data.fullName}_Resume.pdf');
+}
+
+4.	Resume Preview Widget (UI Core)
+
+Widget resumePreview() {
+ return Card(
+	margin: EdgeInsets.all(12),
+	child: Padding(
+	padding: EdgeInsets.all(16),
+	child: Column(
+	crossAxisAlignment: CrossAxisAlignment.start,
+	children: [
+	Text(data.fullName.isEmpty	?	'Full	Name'	: data.fullName,
+	style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+	Text(data.title.isEmpty ? 'Professional Title' : data.title,
+	style:	TextStyle(fontSize:	16,	color: Colors.grey[600])),
+	SizedBox(height: 8),
+	Text(data.email.isEmpty ? 'email@example.com' : data.email),
+	Text(data.phone.isEmpty	?	'+91-XXXXXXXXXX'	: data.phone),
+	if (data.summary.isNotEmpty) ...[
+	SizedBox(height: 12),
+	Text('Summary', style: TextStyle(fontSize: 18, 
